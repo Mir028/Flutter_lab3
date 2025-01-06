@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import '../services/api_services.dart';
 import 'jokes_list_screen.dart';
+import 'favorites_screen.dart';  // Import the new screen
 
-class JokeTypesScreen extends StatelessWidget {
+class JokeTypesScreen extends StatefulWidget {
+  @override
+  _JokeTypesScreenState createState() => _JokeTypesScreenState();
+}
+
+class _JokeTypesScreenState extends State<JokeTypesScreen> {
+  List<String> favoriteJokes = [];  // List to store favorite jokes
+
   // Function to fetch and show a random joke
   void _fetchRandomJoke(BuildContext context) async {
     try {
@@ -26,6 +34,16 @@ class JokeTypesScreen extends StatelessWidget {
                 Navigator.of(context).pop();
               },
               child: Text('Close'),
+            ),
+            // Button to add to favorites
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  favoriteJokes.add('${randomJoke.setup} - ${randomJoke.punchline}');
+                });
+                Navigator.of(context).pop();
+              },
+              child: Text('Add to Favorites'),
             ),
           ],
         ),
@@ -60,6 +78,18 @@ class JokeTypesScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.shuffle),
             onPressed: () => _fetchRandomJoke(context),
+          ),
+          // Add a button to navigate to the favorites screen
+          IconButton(
+            icon: Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FavoritesScreen(favoriteJokes: favoriteJokes),
+                ),
+              );
+            },
           ),
         ],
       ),
